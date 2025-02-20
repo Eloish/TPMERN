@@ -4,7 +4,7 @@ const PostsApi = {
      * @returns Liste de posts
      */
     getProducts: () => {
-      return fetch("http://localhost:8080/products")
+      return fetch("http://localhost:5000/products")
         .then((response) => response.json())
     },
     getcateories:()=>{
@@ -12,7 +12,7 @@ const PostsApi = {
     },
   
     getProductById: (id) => {
-      return fetch(`http://localhost:8080/products/${id}`)
+      return fetch(`http://localhost:5000/products/${id}`)
         .then((response) => response.json())
     },
     
