@@ -12,7 +12,7 @@ const schema = yup
       .string()
       .required("Le nom est obligatoire") ,
     price:yup.integer().required('prix est obligatoire'),
-    amount:yup.integer().required('obligatoire')
+    stock:yup.integer().required('obligatoire'),
         
   })
   .required();
