@@ -28,6 +28,10 @@ const productSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
+  image: {
+    type: String,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -52,6 +56,9 @@ const productValidation = Joi.object({
   stock: Joi.number().min(0).required().messages({
     "number.base": "Le stock doit être un nombre",
     "number.min": "Le stock doit être supérieur ou égal à 0",
+  }),
+  image: Joi.string().required().messages({
+    "string.empty": "L'image est obligatoire",
   }),
 });
 

@@ -62,7 +62,7 @@ export const delProduct = async (req, res) => {
     if (!deletedProduct) {
       return res.status(404).json({ message: "Produit non trouvé" });
     }
-    res.status(204).end();
+    res.status(204).end({message: "Produit supprimé avec succès" });
   } catch (error) {
     console.error(error);
     res.status(500).json({
