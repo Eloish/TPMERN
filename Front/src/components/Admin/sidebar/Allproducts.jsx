@@ -1,102 +1,78 @@
 import Entet from '../sidebar/breadcumb';
+import AdminApi from '../../../services/AdminApi'
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useState,useEffect } from "react";
+
+
 const AllProducts = () => {
+  const navigate = useNavigate();
+
+    const [products, setproducts] = useState([]);
+    useEffect(()=>{
+        AdminApi.getProducts().then((data)=>{
+            setproducts(data)
+        })
+    })
+
+    console.log(products);
+    
+
+    const deleteproduct = (product) => {
+        AdminApi.deleteProduct(product).then((data)=>{
+            navigate('/Admin')
+        })
+
+    }
+
     return (
         <div>
-            <Entet title="Produits"/>
+            <Entet title="Produits" page="AllProducts"/>
             <div className="container-fluid">
             <div className="row clearfix">
                 <div className="col-lg-12">
                     <div className="card">
+                        
                         <div className="table-responsive">
                             <table className="table table-hover product_item_list c_table theme-color mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Image</th>
+                                        <th>#</th>
+                                        <th>Image</th> 
                                         <th>Product Name</th>
-                                        <th data-breakpoints="sm xs">Detail</th>
-                                        <th data-breakpoints="xs">Amount</th>
-                                        <th data-breakpoints="xs md">Stock</th>
-                                        <th data-breakpoints="sm xs md">Action</th>
+                                        <th>Price</th>
+                                        <th>Amount</th>
+                                        {/* <th data-breakpoints="xs md">Stock</th> */}
+                                        <th >Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><img src="assets/images/ecommerce/1.png" width="48" alt="Product img"/></td>
-                                        <td><h5>Simple Black Clock</h5></td>
-                                        <td><span className="text-muted">randomised words even slightly believable</span></td>
-                                        <td>$16.00</td>
-                                        <td><span className="col-green">In Stock</span></td>
+                                    {
+                                        products.map((product,index=1) => (
+                                            <tr key={index++}>
+                                              <td>{product._id}</td>
+                                              <td><img src={product.image} width="48" alt="Product img"></img></td>
+                                              <td><h5>{product.name}</h5></td>
+                                              <td>{product.price} €</td>
+                                              <td>{product.stock}</td>
+                                                
                                         <td>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-green"><i className="zmdi zmdi-edit"></i></a>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-red"><i className="zmdi zmdi-delete"></i></a>
+                                        <Link to={`/Admin/product/edit/${product._id}`} key={product._id}>
+                                             <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-green">Modifier</a>
+
+                                        </Link>
+                                        <button className="btn btn-default waves-effect waves-float btn-sm waves-red" onClick={() => deleteproduct(product._id)}>
+                                            Supprimer 
+                                        </button>
+                                            
+                                            {/* <a href="javascript:void(0);"   className="btn btn-default waves-effect waves-float btn-sm waves-red">Supprimer</a> */}
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="assets/images/ecommerce/10.png" width="48" alt="Product img"/></td>
-                                        <td><h5>Brone Candle</h5></td>
-                                        <td><span className="text-muted">It is a long established  will be distracted</span></td>
-                                        <td>$15.00</td>
-                                        <td><span className="col-amber">Low Stock</span></td>
-                                        <td>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-green"><i className="zmdi zmdi-edit"></i></a>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-red"><i className="zmdi zmdi-delete"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="assets/images/ecommerce/11.png" width="48" alt="Product img"/></td>
-                                        <td><h5>Wood Simple Clock</h5></td>
-                                        <td><span className="text-muted">There passages of Lorem Ipsum available</span></td>
-                                        <td>$16.00</td>
-                                        <td><span className="col-amber">Low Stock</span></td>
-                                        <td>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-green"><i className="zmdi zmdi-edit"></i></a>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-red"><i className="zmdi zmdi-delete"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="assets/images/ecommerce/5.png" width="48" alt="Product img"/></td>
-                                        <td><h5>Unero Small Bag</h5></td>
-                                        <td><span className="text-muted">It is a long established fact that a distracted</span></td>
-                                        <td>$23.00</td>
-                                        <td><span className="col-red">Out Of Stock</span></td>
-                                        <td>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-green"><i className="zmdi zmdi-edit"></i></a>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-red"><i className="zmdi zmdi-delete"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="assets/images/ecommerce/6.png" width="48" alt="Product img"/></td>
-                                        <td><h5>Simple Black Clock</h5></td>
-                                        <td><span className="text-muted">Contrary to popular belief, simply random text</span></td>
-                                        <td>$16.00</td>
-                                        <td><span className="col-green">In Stock</span></td>
-                                        <td>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-green"><i className="zmdi zmdi-edit"></i></a>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-red"><i className="zmdi zmdi-delete"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="assets/images/ecommerce/2.png" width="48" alt="Product img"/></td>
-                                        <td><h5>Brone Lamp Glasses</h5></td>
-                                        <td><span className="text-muted">All the Lorem Ipsum generators on predefined chunks</span></td>
-                                        <td>$12.00</td>
-                                        <td><span className="col-green">In Stock</span></td>
-                                        <td>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-green"><i className="zmdi zmdi-edit"></i></a>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-red"><i className="zmdi zmdi-delete"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="assets/images/ecommerce/3.png" width="48" alt="Product img"/></td>
-                                        <td><h5>Simple Black Clock</h5></td>
-                                        <td><span className="text-muted">established fact that a be distracted</span></td>
-                                        <td>$22.00</td>
-                                        <td><span className="col-red">Out Of Stock</span></td>
-                                        <td>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-green"><i className="zmdi zmdi-edit"></i></a>
-                                            <a href="javascript:void(0);" className="btn btn-default waves-effect waves-float btn-sm waves-red"><i className="zmdi zmdi-delete"></i></a>
-                                        </td>
-                                    </tr>        
+
+                                            </tr>
+                                          ))
+                                    }
+                                    
+                                           
                                 </tbody>
                             </table>
                         </div>
