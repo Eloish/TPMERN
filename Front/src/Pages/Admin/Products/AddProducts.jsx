@@ -1,8 +1,8 @@
-import AddProductForm from '../../../components/Admin/Formulaire/product'
+import AddProduct from '../../../components/Admin/sidebar/AddProduct'
 
 const AddProducts=()=>{
     return(
-        <AddProductForm />
+        <AddProduct />
     )
 }
 export default AddProducts;

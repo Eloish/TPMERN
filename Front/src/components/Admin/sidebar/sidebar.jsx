@@ -239,8 +239,8 @@ const Sidebar=()=>{
                             </div>
                         </li>
                         <li className="active open"><NavLink to="/Admin"><i className="zmdi zmdi-home"></i><span>Dashboard</span></NavLink></li>
-                        <li className=""><NavLink to="/Admin"><i className="zmdi zmdi-home"></i><span>Prducts</span></NavLink></li>*
-                        <li className="active open"><NavLink to="/Admin"><i className="zmdi zmdi-home"></i><span>NewProduct</span></NavLink></li>
+                        <li className=""><NavLink to="/Admin"><i className="zmdi zmdi-home"></i><span>Prducts</span></NavLink></li>
+                        <li className="active open"><NavLink to="/Admin/addproduct"><i className="zmdi zmdi-home"></i><span>NewProduct</span></NavLink></li>
 
                       
                         {/* <li><a href="javascript:void(0);" className="menu-toggle"><i className="zmdi zmdi-shopping-cart"></i><span>product</span></a>
