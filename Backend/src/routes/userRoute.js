@@ -9,6 +9,7 @@ import { userValidation } from "../models/User.js"; // Import du schéma de vali
 
 const router = express.Router();
 
+// Validation des données d'inscription
 router.post(
   "/register",
   (req, res, next) => {
@@ -19,9 +20,9 @@ router.post(
     next(); // Si la validation réussit, passer au contrôleur
   },
   registerUser
-);
+); // Route d'inscription
 
-router.post("/login", loginUser);
-router.get("/me", authMiddleware, getUser);
+router.post("/login", loginUser); // Route de connexion
+router.get("/me", authMiddleware, getUser); // Route protégée pour récupérer les infos de l'utilisateur
 
 export default router;
