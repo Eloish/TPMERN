@@ -18,12 +18,10 @@ function App() {
   return (
     <>
     
-      <NavBar />
-        {showSidebar && <Sidebar />}
-        <section className="content" style={{'margin-top':"60px"}}>
-
-            
-        <Approutes />
+        <NavBar/>
+        {/* {showSidebar && <Sidebar /> } */}
+        <section className="content" style={{'margin-top':"60px", 'margin-left':'30px'}}>   
+          <Approutes /> 
         </section>
     </>
   )
