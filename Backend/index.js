@@ -1,24 +1,21 @@
 import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
 import connectDB from "./src/db/dbConnect.js";
-import { date, monPath } from "./src/middleware/middleware.js";
-import routes from "./src/routes/ProduitRoutes.js";
+import productRoutes from "./src/routes/ProduitRoutes.js";
 import userRoutes from "./src/routes/userRoute.js";
-
+import errorHandler from "./src/middleware/errorHandler.js";
+import * as dotenv from "dotenv";
 dotenv.config();
-connectDB();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-const port = process.env.PORT;
+connectDB();
+
 app.use(express.json());
-app.use(cors())
 
-app.use(monPath);
-app.use(routes);
-app.use('/user', userRoutes)
+app.use("/products", productRoutes);
+app.use("/users", userRoutes);
 
-app.listen(port, () =>
-  console.log(`Le serveur est a l'écoute sur le port ${port}`)
-);
+app.use(errorHandler);
+
+app.listen(PORT, () => console.log(`Serveur sur le port ${PORT}`));

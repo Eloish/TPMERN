@@ -1,16 +1,27 @@
 import express from "express";
-const router = express.Router();
 import {
   registerUser,
   loginUser,
   getUser,
-  validateUser,
-} from "../controllers/UserController.js";
-import authMiddleware from "../middleware/authMiddleware.js"; // Middleware d'authentification
+} from "../controllers/userController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import { userValidation } from "../models/User.js"; // Import du schéma de validation
 
-// Routes
-router.post("/register", validateUser, registerUser);
+const router = express.Router();
+
+router.post(
+  "/register",
+  (req, res, next) => {
+    const { error } = userValidation.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    next(); // Si la validation réussit, passer au contrôleur
+  },
+  registerUser
+);
+
 router.post("/login", loginUser);
-router.get("/me", authMiddleware, getUser); // Route protégée
+router.get("/me", authMiddleware, getUser);
 
 export default router;
