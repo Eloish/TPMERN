@@ -1,118 +1,184 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import AdminApi from '../../../services/AdminApi';
+import { useState,useEffect } from "react";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
-import {yupResolver} from "@hookform/resolvers/yup";
-import Entet from "../sidebar/breadcumb";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-const schema = yup
-  .object({
-    name: yup
-      .string()
-      .required("Le nom est obligatoire") ,
-    price:yup.integer().required('prix est obligatoire'),
-    stock:yup.integer().required('obligatoire'),
-        
-  })
-  .required();
+// ✅ Définition du schéma Yup pour la validation
+const schema = yup.object({
+  name: yup.string().required("Le nom est obligatoire"),
+  category: yup.string().required("Le nom est obligatoire"),
 
-const AddProductForm = () => {
+  description: yup.string().required("La description est obligatoire"),
+  price: yup
+    .number()
+    .typeError("Le prix doit être un nombre")
+    .positive("Le prix doit être positif")
+    .required("Le prix est obligatoire"),
+  stock: yup
+    .number()
+    .typeError("La quantité doit être un nombre")
+    .integer("La quantité doit être un nombre entier")
+    .positive("La quantité doit être positive")
+    .required("La quantité est obligatoire"),
+//   image: yup.mixed().required("L'image est obligatoire"),
+}).required();
+
+const AddProductForm = ({ defaultValues, onSubmit, buttonText }) => {
+
+  const [image, setImage] = useState(null);
+
+  const [base64, setBase64] = useState("");
+
+  
   const {
     register,
-    // handleSubmit,
+    handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
-  
+  } = useForm({
+    defaultValues,
+    resolver: yupResolver(schema),
+  });
 
-const categories=[{
-    id:1,
-    nom:"vetements"
-},
-{
-    id:2,
-    nom:"chaussures"
+  useEffect(() => {
+    if (defaultValues) {
+      // Mettre à jour les champs avec les valeurs par défaut
+      Object.keys(defaultValues).forEach((key) => {
+        setValue(key, defaultValues[key]);
+      });
 
-},
-]
-const [file, setFile] = useState();
-const showimage=(e)=>{
-    console.log(e.target.files);
-    setFile(URL.createObjectURL(e.target.files[0]));
+      // Si une image est présente, la mettre à jour dans l'état
+      if (defaultValues.image) {
+        setBase64(defaultValues.image); // Assurez-vous que defaultValues.image est une URL ou une base64 valide
+      }
+    }
+  }, [defaultValues, setValue]);
 
-}
+  // ✅ Gérer la sélection d'image
+  const showImage = async (event) => {
+    
+    const file = event.target.files[0];
+    if (file) {
+    
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setBase64(reader.result);
+        setValue("image", reader.result); 
+      };
+    }
 
+  };
+
+ 
 
   return (
     <>
-      <Entet title="Add Products"/>
-      <div className="container-fluid">
-            
-            <div className="row clearfix">
-                <div className="col-lg-12 col-md-12 col-sm-12">
-                   
-                    <div className="card">
-                        <div className="body">
-                            <h2 className="card-inside-title">Add Products Form</h2>
-                            <form action="onSubmit={handleSubmit(onSubmit)}">
-                            <div className="row clearfix">
-                                <div className="col-sm-6">
-                                    <input type="file" className="form-control" onChange={showimage}/>
-
-                                </div>
-                                <div className="col-sm-6 mb-4">
-                                    <img src={file} alt=""  width="60" height="60" {...register("category_id")} />
-                                </div>
-                            </div> 
-                            <div className="row clearfix ">
-                            
-                                <div class="col-sm-6">
-                                <select class="form-control show-tick" {...register("category_id")}>
-                                    {
-                                        categories.map((category)=>(
-                                            <option key={category.id} value='${category.id}'>{category.nom}</option>
-                                        ))
-                                    }
-                                </select>
-                                </div>
-                            <div className="col-sm-6">
-                                    <div className="form-group pb-2">                                    
-                                        <input type="text" className="form-control" {...register('name')} placeholder="Product_Name" />
-                                    </div>
-                            </div>   
-                            <div className="col-sm-12">
-                                    <div className="form-group pb-2">
-                                        <div className="form-line">
-                                            <textarea rows="4" className="form-control no-resize" placeholder="Description"></textarea>
-                                        </div>
-                                    </div>
-                            </div>
-                            </div>
-                            <div className="row clearfix pb-2 ">
-                            <div className="col-sm-6">
-                                <div className="form-group">                                   
-                                    <input type="text" className="form-control" {...register("price")} placeholder="Price" />                                    
-                                </div>
-                            </div>
-                            <div className="col-sm-6">
-                                <div className="form-group">                                   
-                                    <input type="number" className="form-control" {...register("stock") }placeholder="Quantite" />                                    
-                                </div>
-                            </div>
-                        </div>  
-                        <div>
-                            <button type="submit">Ajouter</button>
-                        </div>
-                            </form>
-                           
-                        </div>
+      {/* <Entet title="Ajouter un produit" /> */}
+      
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div className="row clearfix">
+                    {/* ✅ Input pour l'image */}
+                    <div className="col-sm-6">
+                      <input
+                        type="file"
+                        className="form-control"
+                        accept="image/*"
+                        onChange={showImage}                                                                                                             
+                      />
+                      {errors.image && <p className="text-danger">{errors.image.message}</p>}
                     </div>
-                </div>
-            </div> 
-      </div>
+                    {/* ✅ Affichage de l'aperçu */}
+                    <div className="col-sm-6 mb-4">
+                       {base64 && (
+                           <div>
+                             <img src={base64} alt="Preview" className="mt-4 w-32 h-32 object-cover" />
+                           </div>
+                       )}
+                    </div>
+                  </div>
 
+                  <div className="row clearfix">
+                  <div className="col-sm-6">
+                      <div className="form-group pb-2">
+                        <input
+                        {...register("category")}
+                          type="text"
+                          className="form-control"
+                          
+                          placeholder="category"
+                        />
+                        {errors.category && <p className="text-danger">{errors.category.message}</p>}
+                      </div>
+                    </div>
+                    {/* ✅ Nom du produit */}
+                    <div className="col-sm-6">
+                      <div className="form-group pb-2">
+                        <input
+                        {...register("name")}
+                          type="text"
+                          className="form-control"
+                          
+                          placeholder="Nom du produit"
+                        />
+                        {errors.name && <p className="text-danger">{errors.name.message}</p>}
+                      </div>
+                    </div>
+
+                    {/* ✅ Description */}
+                    <div className="col-sm-12">
+                      <div className="form-group pb-2">
+                        <textarea
+                          rows="4"
+                          className="form-control no-resize"
+                          {...register("description")}
+                          placeholder="Description"
+                        />
+                        {errors.description && (
+                          <p className="text-danger">{errors.description.message}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row clearfix pb-2">
+                    {/* ✅ Prix */}
+                    <div className="col-sm-6">
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          className="form-control"
+                          {...register("price")}
+                          placeholder="Prix"
+                        />
+                        {errors.price && <p className="text-danger">{errors.price.message}</p>}
+                      </div>
+                    </div>
+
+                    {/* ✅ Stock */}
+                    <div className="col-sm-6">
+                      <div className="form-group">
+                        <input
+                          type="number"
+                          className="form-control"
+                          {...register("stock")}
+                          placeholder="Quantité"
+                        />
+                        {errors.stock && <p className="text-danger">{errors.stock.message}</p>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ✅ Bouton de soumission */}
+                  <div>
+                    <button type="submit" className="btn btn-primary">
+                    {buttonText}
+                    </button>
+                  </div>
+                </form>
+          
     </>
   );
 };
 
-export default AddProductForm ;
+export default AddProductForm;
