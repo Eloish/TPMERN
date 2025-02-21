@@ -1,24 +1,37 @@
+// productController.js
 import { Product, productValidation } from "../models/produit.js";
+import mongoose from "mongoose";
 
-/**
- * Route Get pour récupérer la liste des produits
- * @param {} req
- * @param {*} res La liste des produits
- */
 export const getProducts = async (req, res) => {
-  const products = await Product.find();
-  res.send(products);
+  try {
+    const searchQuery = req.query.q || "";
+    let filter = {};
+    if (searchQuery) {
+      filter = {
+        $or: [
+          // $or permet de rechercher dans plusieurs champs
+          { name: { $regex: searchQuery, $options: "i" } },
+          { description: { $regex: searchQuery, $options: "i" } },
+          { category: { $regex: searchQuery, $options: "i" } },
+        ],
+      };
+    }
+    const products = await Product.find(filter);
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération des produits" });
+  }
 };
 
-/**
- * Middleware pour récupérer un produit par son id
- * @param {*} req
- * @param {*} res
- * @returns
- */
 export const getProductByID = async (req, res) => {
   try {
-    const productID = req.params.id.trim().replace(/^:/, "");
+    const productID = req.params.id.trim().replace(/^:/, ""); // Nettoyage de l'ID
+    if (!mongoose.Types.ObjectId.isValid(productID)) {
+      return res.status(400).json({ message: "ID de produit invalide" });
+    }
     const product = await Product.findById(productID);
 
     if (!product) {
@@ -31,12 +44,6 @@ export const getProductByID = async (req, res) => {
   }
 };
 
-/**
- * Middleware pour ajouter un produit
- * @param {} req
- * @param {*} res
- * @returns
- */
 export const newProduct = async (req, res) => {
   try {
     const { error, value } = productValidation.validate(req.body);
@@ -58,11 +65,15 @@ export const newProduct = async (req, res) => {
 
 export const delProduct = async (req, res) => {
   try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    const productID = req.params.id.trim().replace(/^:/, ""); // Nettoyage de l'ID
+    if (!mongoose.Types.ObjectId.isValid(productID)) {
+      return res.status(400).json({ message: "ID de produit invalide" });
+    }
+    const deletedProduct = await Product.findByIdAndDelete(productID);
     if (!deletedProduct) {
       return res.status(404).json({ message: "Produit non trouvé" });
     }
-    res.status(204).end({message: "Produit supprimé avec succès" });
+    res.status(204).end(); // Pas de contenu à renvoyer, code 204 No Content
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -70,8 +81,6 @@ export const delProduct = async (req, res) => {
     });
   }
 };
-
-import mongoose from "mongoose"; // Assurez-vous d'importer mongoose
 
 export const updateProduct = async (req, res) => {
   try {
@@ -87,14 +96,8 @@ export const updateProduct = async (req, res) => {
 
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
-      {
-        name: req.body.name,
-        price: req.body.price,
-        description: req.body.description,
-        category: req.body.category,
-        stock: req.body.stock,
-      },
-      { new: true }
+      req.body, // Utiliser directement req.body pour la mise à jour
+      { new: true, runValidators: true } // runValidators pour valider les champs
     );
 
     if (!updatedProduct) {
