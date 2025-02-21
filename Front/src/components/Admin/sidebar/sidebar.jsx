@@ -222,7 +222,7 @@ const Sidebar=()=>{
         <li><a href="sign-in.html" className="mega-menu" title="Sign Out"><i className="zmdi zmdi-power"></i></a></li>
     </ul>
            </div> */}
-           <aside id="leftsidebar" className="sidebar">
+           <aside id="leftsidebar" className="sidebar" style={{'margin-top':"50px"}}>
                 <div className="navbar-brand">
                     <button className="btn-menu ls-toggle-btn" type="button"><i className="zmdi zmdi-menu"></i></button>
                     <a href="index.html"><img src="assets/images/logo.svg" width="25" alt="Aero"/><span className="m-l-10">Aero</span></a>
@@ -255,10 +255,7 @@ const Sidebar=()=>{
                     </ul>
                 </div>
            </aside>
-           <section className="content">
-            
-              <Approutes/>
-           </section>
+           
         </>
     )
 

@@ -12,6 +12,13 @@ import Panier from '../components/user/panier/Panier';
 const Approutes=()=>{
     return (
         <Routes>
+            {/* Routes des Users */}
+            <Route path="/" element={<ProductsList />} />
+            <Route path="/produits" element={<ProductsList />} /> 
+            <Route path="/produits/detail/:id" element={<Details />} /> 
+            <Route path='/panier' element={<Panier />} />
+
+            <Route path="/*" element={<ErrorPage />} />
             
              <Route path="/Admin" element={<ListesProducts />} />
              <Route path="/Admin/addproduct" element={<AddProducts/>}/>
@@ -21,13 +28,7 @@ const Approutes=()=>{
              {/* <Route path="/posts/product:id" element={<SinglePost />} /> */}
 
 
-            {/* Routes des Users */}
-            <Route path="/" element={<ProductsList />} />
-            <Route path="/produits" element={<ProductsList />} /> 
-            <Route path="/produits/detail" element={<Details />} /> 
-            <Route path='/panier' element={<Panier />} />
-
-            <Route path="/*" element={<ErrorPage />} />
+            
 
         </Routes>
     )

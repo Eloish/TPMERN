@@ -5,9 +5,21 @@ const PostsApi = {
      * @returns Liste de posts
      */
     getProducts: () => {
+      
       return fetch("http://localhost:5000/products")
         .then((response) => response.json())
     },
+    // getProducts: (query = "") => {
+    //   const url = query
+    // ? `http://localhost:5000/products?q=${searchQuery}` // Si un terme de recherche est passé
+    // : "http://localhost:5000/products"; // Sinon, récupérer tous les produits
+
+      
+    //   return fetch(url)
+    //     .then((response) => response.json())
+    // },
+  
+  
     getcateories:()=>{
 
     },
