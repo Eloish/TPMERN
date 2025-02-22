@@ -22,29 +22,28 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  nom: {
-    type: String,
-    required: true,
-  },
 });
 
 const User = mongoose.model("User", userSchema);
 
-const userValidation = Joi.object({
+const userValidationSchema = Joi.object({
+  // Renommer pour éviter la confusion
   username: Joi.string().required().trim().messages({
     "string.empty": "Le nom d'utilisateur est obligatoire",
   }),
-  password: Joi.string().required().messages({
+  password: Joi.string().required().min(6).messages({
     "string.empty": "Le mot de passe est obligatoire",
+    "string.min": "Le mot de passe doit contenir au moins 6 caractères",
   }),
   email: Joi.string().email().required().trim().messages({
     "string.empty": "L'email est obligatoire",
     "string.email": "L'email n'est pas valide",
   }),
-  nom: Joi.string().required().trim().messages({
-    "string.empty": "Le nom est obligatoire",
-  }),
-  // ... validation des autres champs
 });
+
+const userValidation = (data) => {
+  // Créer la fonction de validation
+  return userValidationSchema.validate(data);
+};
 
 export { User, userValidation };

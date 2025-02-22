@@ -1,16 +1,34 @@
 import express from "express";
-const router = express.Router();
 import {
   registerUser,
   loginUser,
   getUser,
-  validateUser,
+  getAllUsers,
 } from "../controllers/UserController.js";
-import authMiddleware from "../middleware/authMiddleware.js"; // Middleware d'authentification
+import authMiddleware from "../middleware/authMiddleware.js";
+import { userValidation } from "../models/User.js";
 
-// Routes
-router.post("/register", validateUser, registerUser);
+const router = express.Router();
+
+// Middleware de validation pour l'inscription
+const validateRegister = (req, res, next) => {
+  const { error } = userValidation(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+  next();
+};
+
+// Route d'inscription
+router.post("/register", validateRegister, registerUser);
+
+// Route de connexion
 router.post("/login", loginUser);
-router.get("/me", authMiddleware, getUser); // Route protégée
+
+// Route protégée pour récupérer les infos de l'utilisateur connecté
+router.get("/me", authMiddleware, getUser);
+
+// Route protégée pour récupérer tous les utilisateurs (nécessite un rôle admin, par exemple)
+router.get("/users", authMiddleware, getAllUsers);
 
 export default router;

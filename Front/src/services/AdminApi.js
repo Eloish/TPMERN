@@ -19,11 +19,6 @@ const PostsApi = {
     //     .then((response) => response.json())
     // },
   
-  
-    getcateories:()=>{
-
-    },
-  
     getProductById: (id) => {
       return fetch(`http://localhost:5000/products/${id}`)
         .then((response) => response.json())

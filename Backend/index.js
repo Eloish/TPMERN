@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./src/db/dbConnect.js";
 import { date, monPath } from "./src/middleware/middleware.js";
-import routes from "./src/routes/ProduitRoutes.js";
+import ProduitRoutes from "./src/routes/ProduitRoutes.js";
 import userRoutes from "./src/routes/userRoute.js";
 
 dotenv.config();
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors())
 
 app.use(monPath);
-app.use(routes);
+app.use(ProduitRoutes);
 app.use('/user', userRoutes)
 
 app.listen(port, () =>
